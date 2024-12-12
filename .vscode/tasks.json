@@ -1,0 +1,22 @@
+{
+    // cobc -x .\hello.cob
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Compile COBOL",
+        "type": "shell",
+        "command": "cobc",
+        "args": [
+          "-x",
+          "./Beginner/file.cob",
+          "-o",
+          "./Beginner/file.exe"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }
+  
