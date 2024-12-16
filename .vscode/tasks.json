@@ -8,9 +8,11 @@
         "command": "cobc",
         "args": [
           "-x",
-          "./Beginner/file.cob",
+          "./MysqlTest/1.cob",
           "-o",
-          "./Beginner/file.exe"
+          "./MysqlTest/1.exe"
+          // cobc -x -o mysql_select.exe mysql_select.cob -I"C:\Program Files\MySQL\MySQL Server 5.6\include" -L"C:\Program Files\MySQL\MySQL Server 5.6\lib" -lmysqlclient
+
         ],
         "group": {
           "kind": "build",
