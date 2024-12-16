@@ -8,9 +8,10 @@
         "command": "cobc",
         "args": [
           "-x",
-          "./MysqlTest/1.cob",
+          "./Batch/BatchAccountProcessor.cob",
           "-o",
-          "./MysqlTest/1.exe"
+          "./Batch/BatchAccountProcessor.exe"
+          
           // cobc -x -o mysql_select.exe mysql_select.cob -I"C:\Program Files\MySQL\MySQL Server 5.6\include" -L"C:\Program Files\MySQL\MySQL Server 5.6\lib" -lmysqlclient
 
         ],
