@@ -12,3 +12,8 @@
    在解压缩的目录下执行以下命令：  
    ```bash
    java -jar RES.jar COBOL\Addition.cob
+   ```
+4. **生成 Java 文件**  
+   运行成功后，会在 `cobolprogramclasses` 目录中生成 Java 文件。
+```
+
