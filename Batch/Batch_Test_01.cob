@@ -1,0 +1,105 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PEXAM1.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT INPUT-FILE ASSIGN TO 'FILE1'
+               ORGANIZATION IS SEQUENTIAL
+               ACCESS MODE IS SEQUENTIAL
+               FILE STATUS IS WS-INPUT-FILE-STATUS.
+
+           SELECT OUTPUT-FILE ASSIGN TO 'P-FILE'
+               ORGANIZATION IS SEQUENTIAL
+               ACCESS MODE IS SEQUENTIAL
+               FILE STATUS IS WS-OUTPUT-FILE-STATUS.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD  INPUT-FILE LABEL RECORD IS STANDARD.
+       01  IN-REC.
+           05 TRANSACTION-DATE   PIC 9(8).        *> 更改了字段名 "DATE"
+           05 PROD-CODE          PIC 9(6).
+           05 CUSTOMER-CODE      PIC X(4).
+           05 QUANTITY           PIC 9(4).
+           05 UNIT-PRICE         PIC 9(4).
+
+       FD  OUTPUT-FILE LABEL RECORD IS STANDARD.
+       01  OUT-REC.
+           05 TRANSACTION-DATE   PIC 9999B99B99.   *> 更改了字段名 "DATE"
+           05 FILLER             PIC X(5).
+           05 PROD-CODE          PIC 9(6).
+           05 FILLER             PIC X(5).
+           05 CUSTOMER-CODE      PIC X(4).
+           05 FILLER             PIC X(5).
+           05 QUANTITY           PIC ZZZ9.
+           05 FILLER             PIC X(5).
+           05 UNIT-PRICE         PIC $(5).
+           05 FILLER             PIC X(5).
+           05 SALES-VALUE        PIC $(8).
+
+       WORKING-STORAGE SECTION.
+       01 WS-VARIABLES.
+           05 WS-INPUT-FILE-STATUS     PIC 9(2).
+               88 WS-INPUT-FILE-SUCCESSFUL VALUE 0.
+               88 WS-INPUT-FILE-EOF        VALUE 23.
+           05 WS-OUTPUT-FILE-STATUS    PIC 9(2).
+               88 WS-OUTPUT-FILE-SUCCESSFUL VALUE 0.
+
+       PROCEDURE DIVISION.
+
+       A000-MAIN.
+           PERFORM A100-OPEN-FILES
+           PERFORM R000-READ-FILE
+           PERFORM A200-PROCESS-RECORD UNTIL WS-INPUT-FILE-EOF
+           PERFORM A300-CLOSE-FILES
+           STOP RUN.
+
+       A100-OPEN-FILES.
+           OPEN INPUT INPUT-FILE
+                OUTPUT OUTPUT-FILE
+           IF NOT WS-INPUT-FILE-SUCCESSFUL
+               DISPLAY 'INPUT-FILE OPEN NOT SUCCESSFUL' UPON CONSOLE
+               PERFORM Z000-ABEND
+           END-IF
+           IF NOT WS-OUTPUT-FILE-SUCCESSFUL
+               DISPLAY 'OUTPUT-FILE OPEN NOT SUCCESSFUL' UPON CONSOLE
+               PERFORM Z000-ABEND
+           END-IF.
+
+       A200-PROCESS-RECORD.
+           INITIALIZE OUT-REC
+           MOVE CORR IN-REC TO OUT-REC
+
+           *> 计算销售价值
+           COMPUTE SALES-VALUE = QUANTITY * UNIT-PRICE OF OUT-REC  *> 修正引用
+
+           PERFORM W000-WRITE-FILE
+           PERFORM R000-READ-FILE.
+
+       A300-CLOSE-FILES.
+           CLOSE INPUT-FILE
+                 OUTPUT-FILE.
+
+       R000-READ-FILE.
+           READ INPUT-FILE
+           IF NOT WS-INPUT-FILE-SUCCESSFUL AND NOT WS-INPUT-FILE-EOF
+               DISPLAY 'INPUT-FILE READ NOT SUCCESSFUL' UPON CONSOLE
+               PERFORM Z000-ABEND THRU Z000-EXIT
+           END-IF.
+
+       W000-WRITE-FILE.
+           WRITE OUT-REC AFTER 1
+           IF NOT WS-OUTPUT-FILE-SUCCESSFUL
+               DISPLAY 'OUTPUT-FILE WRITE NOT SUCCESSFUL' UPON CONSOLE
+               PERFORM Z000-ABEND
+           END-IF.
+
+       Z000-ABEND.
+           DISPLAY 'PROGRAM ABEND!' UPON CONSOLE
+           PERFORM A300-CLOSE-FILES
+           MOVE 16 TO RETURN-CODE
+           GOBACK.
+
+       Z000-EXIT.
+           EXIT.

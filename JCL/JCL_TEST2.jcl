@@ -1,0 +1,10 @@
+//MYJOB    JOB (ACCT#),'NAME',CLASS=A,MSGCLASS=A
+//STEP1    EXEC PGM=MYPROGRAM1
+//STEP2    EXEC PGM=MYPROGRAM2    
+//COND     COND=(0,NE) 
+
+如果 STEP1 执行的返回码是 0（表示成功），那么 STEP2 将 被跳过，不会执行。
+如果 STEP1 执行的返回码不是 0（表示失败），那么 STEP2 将 被执行。
+
+//INPUT    DD   DSN=MY.INPUT.FILE,DISP=SHR
+//OUTPUT   DD   DSN=MY.OUTPUT.FILE,DISP=NEW
